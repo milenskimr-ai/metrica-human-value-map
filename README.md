@@ -12,7 +12,7 @@ Stack: Next.js (App Router) · TypeScript · Tailwind CSS · Supabase (Phase 2) 
 |---|---|---|
 | 1 | Frontend MVP: language, welcome, 7 questions, scoring, Human Value Map, journey, lead form, conference mode | ✅ done |
 | 2 | Supabase storage (API routes + service-role key on the server only) | ✅ done |
-| 3 | Protected admin dashboard (stats, lead table, CSV export) | ⏳ |
+| 3 | Protected admin dashboard (stats, lead table, CSV export) | ✅ done |
 | 4 | Vercel production deployment + custom domain | ⏳ |
 
 
@@ -49,6 +49,21 @@ browser ──POST /api/submissions/complete──▶ Next.js API route ──se
 - **Security:** Row Level Security is on with no policies, so the public `anon` key has no access. The service-role key is used only in server code (`lib/server/`, guarded by `server-only`).
 - **Spam:** hidden honeypot field, request size limit, strict input validation. For heavy traffic, add Vercel's firewall or rate-limit rules.
 - If saving the completed test fails, the visitor still sees their result. If saving the lead fails, the form shows an error and the visitor can retry.
+
+## Admin dashboard
+
+Open **`/admin`** (e.g. `https://cx.metrica.bg/admin`) and sign in with `ADMIN_PASSWORD`.
+
+- **Statistics:** completed tests, leads, lead conversion rate, and the average Automation / Human Value / CX Maturity scores. Filter them by period (today, 7 days, 30 days, all time), language and source (conference mode vs online).
+- **Lead table:** date, language, name, company, email, phone, website, the three results, biggest opportunity and biggest challenge. Switch between *Leads* and *All tests*. Search by name, company, email, website or phone, and filter by opportunity or challenge.
+- **Details:** click a row to see all answers, the result, and the consent record (time, version, exact wording).
+- **Export CSV:** exports the rows currently shown, with all answers as stable IDs. The file opens correctly in Excel with Bulgarian text.
+
+Security:
+- One shared password, a signed httpOnly cookie valid for 12 hours, and a delay after a wrong password.
+- The admin pages are not indexed by search engines, and all data is loaded on the server with the service-role key.
+- Signing out clears the cookie in that browser. To sign out everyone, change `ADMIN_PASSWORD`.
+- Dates are shown in Bulgarian time (Europe/Sofia).
 
 ## Where to change things (no React knowledge needed)
 
@@ -101,5 +116,8 @@ lib/state.tsx        flow state (sessionStorage), language, reset
 lib/persistence.ts   browser → API calls
 lib/server/          server-only: Supabase client, validation, row building
 app/api/submissions/ API routes (complete, lead)
+app/admin/           admin login + dashboard (server-protected)
+components/admin/    dashboard UI, lead details panel
+lib/admin/           CSV export, formatting
 supabase/migrations/ SQL schema
 ```
