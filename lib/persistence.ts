@@ -1,59 +1,51 @@
 /**
  * Persistence adapter — the only place the UI talks to storage.
- *
- * PHASE 1 (current): records are kept in this browser's localStorage
- *   under "mhvm:dev-records" so the full flow can be tested without a backend.
- * PHASE 2: these functions will POST to a Next.js API route that writes
- *   to Supabase with the server-only service-role key.
+ * Sends data to our own API routes; they validate it, recompute the scores
+ * and write to Supabase with the server-only service-role key.
  */
 
 import type { Answers } from "@/config/questions";
-import type { Dimension, Level } from "@/config/scoring";
-import type { OpportunityCategory } from "@/config/opportunity";
 import type { Lang } from "./i18n";
 
-export interface CompletedTestRecord {
+export interface CompletedTestPayload {
   sessionId: string;
   language: Lang;
-  completedAt: string; // ISO timestamp
   conferenceMode: boolean;
   answers: Answers; // stable IDs only
-  scores: Record<Dimension, number>;
-  levels: Record<Dimension, Level>;
-  biggestOpportunity: OpportunityCategory;
 }
 
-export interface LeadRecord {
-  sessionId: string;
-  language: Lang;
+export interface LeadPayload extends CompletedTestPayload {
   firstName: string;
   lastName: string;
   company: string;
   email: string;
   website: string;
   phone: string | null;
-  consentGiven: true;
-  consentAt: string; // ISO timestamp of the moment the form was submitted with consent
-  consentVersion: string;
-  consentText: string; // exact wording shown to the visitor
+  consent: true;
+  /** honeypot — must stay empty */
+  fax: string;
 }
 
-const DEV_KEY = "mhvm:dev-records";
+async function post(path: string, body: unknown, keepalive = false) {
+  const res = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    keepalive,
+  });
+  if (!res.ok) throw new Error(`${path} failed: ${res.status}`);
+}
 
-function devAppend(kind: string, record: unknown) {
+/** Fire-and-forget: the visitor always sees their result, even if saving fails. */
+export async function saveCompletedTest(payload: CompletedTestPayload): Promise<void> {
   try {
-    const list = JSON.parse(localStorage.getItem(DEV_KEY) ?? "[]");
-    list.push({ kind, savedAt: new Date().toISOString(), record });
-    localStorage.setItem(DEV_KEY, JSON.stringify(list));
-  } catch {
-    // storage unavailable (private mode etc.) — ignore in Phase 1
+    await post("/api/submissions/complete", payload, true);
+  } catch (e) {
+    console.warn(e);
   }
 }
 
-export async function saveCompletedTest(record: CompletedTestRecord): Promise<void> {
-  devAppend("completed_test", record);
-}
-
-export async function saveLead(record: LeadRecord): Promise<void> {
-  devAppend("lead", record);
+/** Throws on failure so the form can show an error and let the visitor retry. */
+export async function saveLead(payload: LeadPayload): Promise<void> {
+  await post("/api/submissions/lead", payload);
 }

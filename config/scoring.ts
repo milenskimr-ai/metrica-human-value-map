@@ -35,6 +35,9 @@ export interface DimensionConfig {
   weights: WeightTable;
 }
 
+/** Bump when weights change — stored with every result so old and new results can be told apart. */
+export const SCORING_VERSION = "placeholder-v1";
+
 export const DIMENSIONS: readonly Dimension[] = ["automation", "human_value", "cx_maturity"];
 
 export const LEVEL_THRESHOLDS = {

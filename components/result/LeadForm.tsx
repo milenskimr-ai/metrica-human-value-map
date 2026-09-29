@@ -29,6 +29,7 @@ export function LeadForm() {
   const [consent, setConsent] = useState(false); // never pre-checked
   const [errors, setErrors] = useState<Partial<Record<FieldName | "consent" | "submit", string>>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [fax, setFax] = useState(""); // honeypot
 
   if (state.leadSubmitted) {
     return (
@@ -61,6 +62,7 @@ export function LeadForm() {
         email: values.email.trim().toLowerCase(),
         website: values.website.trim(),
         phone: values.phone.trim() || null,
+        fax,
       });
     } catch {
       setErrors({ submit: t("lead.errors.submit") });
@@ -124,6 +126,18 @@ export function LeadForm() {
             </a>
           )}
         </div>
+
+        {/* Honeypot for bots — hidden from people and screen readers */}
+        <input
+          type="text"
+          name="fax"
+          value={fax}
+          onChange={(e) => setFax(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden
+          className="absolute -left-[9999px] h-px w-px opacity-0"
+        />
 
         {errors.submit && <p className="text-sm text-red-600 sm:col-span-2">{errors.submit}</p>}
 

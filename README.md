@@ -11,11 +11,10 @@ Stack: Next.js (App Router) · TypeScript · Tailwind CSS · Supabase (Phase 2) 
 | Phase | Scope | Status |
 |---|---|---|
 | 1 | Frontend MVP: language, welcome, 7 questions, scoring, Human Value Map, journey, lead form, conference mode | ✅ done |
-| 2 | Supabase storage (API route + service-role key on the server only) | ⏳ |
+| 2 | Supabase storage (API routes + service-role key on the server only) | ✅ done |
 | 3 | Protected admin dashboard (stats, lead table, CSV export) | ⏳ |
 | 4 | Vercel production deployment + custom domain | ⏳ |
 
-In Phase 1, completed tests and leads are saved **in the browser's localStorage** (`mhvm:dev-records`) so the whole flow can be tested. Nothing is sent to a server yet.
 
 ## Run locally
 
@@ -27,6 +26,30 @@ npm run dev                  # http://localhost:3000
 
 Other scripts: `npm run build` · `npm run typecheck` · `npm run check:locales`
 
+## Supabase setup (one time)
+
+1. Create a Supabase project (EU region recommended, e.g. Frankfurt).
+2. In **SQL Editor**, run `supabase/migrations/0001_diagnostic_sessions.sql`.
+3. In **Project Settings → API**, copy the Project URL and the `service_role` key into `.env.local` (and later into Vercel):
+   ```
+   SUPABASE_URL=https://xxxx.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=...
+   ```
+
+### How data flows
+
+```
+browser ──POST /api/submissions/complete──▶ Next.js API route ──service-role key──▶ Supabase
+        ──POST /api/submissions/lead─────▶
+```
+
+- **One row per completed test** in `diagnostic_sessions`. It is stored as soon as the result is shown, without contact data (for aggregate statistics). If the visitor then submits the lead form, the same row gets the contact fields.
+- The browser sends **only answer IDs**. The server validates them and **recomputes the scores itself**, so scores cannot be faked. The row also stores `scoring_version` (`config/scoring.ts`), so results from different weight versions can be told apart.
+- **Consent:** the server stores `consent_given`, `consent_at` (server time), `consent_version` and the exact `consent_text` shown in the visitor's language. A database constraint rejects contact data without consent.
+- **Security:** Row Level Security is on with no policies, so the public `anon` key has no access. The service-role key is used only in server code (`lib/server/`, guarded by `server-only`).
+- **Spam:** hidden honeypot field, request size limit, strict input validation. For heavy traffic, add Vercel's firewall or rate-limit rules.
+- If saving the completed test fails, the visitor still sees their result. If saving the lead fails, the form shows an error and the visitor can retry.
+
 ## Where to change things (no React knowledge needed)
 
 | What | File |
@@ -37,6 +60,7 @@ Other scripts: `npm run build` · `npm run typecheck` · `npm run check:locales`
 | Customer journey stage rules (AUTOMATE / AI + HUMAN / HUMAN) | `config/journey.ts` |
 | "Biggest opportunity" rules | `config/opportunity.ts` |
 | Contact URL, privacy policy URL, consent version | `config/app.ts` |
+| Scoring version label (bump when weights change) | `config/scoring.ts` → `SCORING_VERSION` |
 
 Rules:
 - Both locale files must have the same keys. Run `npm run check:locales` after editing them.
@@ -74,5 +98,8 @@ config/              questions, scoring, journey, opportunity, app settings
 locales/             bg.json, en.json
 lib/engine/          pure scoring / journey / opportunity / explanation logic
 lib/state.tsx        flow state (sessionStorage), language, reset
-lib/persistence.ts   save completed test / lead (Phase 1: localStorage → Phase 2: Supabase)
+lib/persistence.ts   browser → API calls
+lib/server/          server-only: Supabase client, validation, row building
+app/api/submissions/ API routes (complete, lead)
+supabase/migrations/ SQL schema
 ```

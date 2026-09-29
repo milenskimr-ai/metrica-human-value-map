@@ -5,7 +5,7 @@ import { APP_CONFIG } from "@/config/app";
 import { QUESTIONS, type Answers, type QuestionId } from "@/config/questions";
 import { computeResult, type DiagnosticResult } from "./engine";
 import { createT, hasKey, LANGUAGES, type Lang, type Translate } from "./i18n";
-import { saveCompletedTest, saveLead, type LeadRecord } from "./persistence";
+import { saveCompletedTest, saveLead, type LeadPayload } from "./persistence";
 
 export type Screen = "language" | "welcome" | "question" | "insight" | "result" | "thanks";
 
@@ -37,7 +37,7 @@ const freshState = (): FlowState => ({
   leadSubmitted: false,
 });
 
-type LeadInput = Omit<LeadRecord, "sessionId" | "language" | "consentGiven" | "consentAt" | "consentVersion" | "consentText">;
+type LeadInput = Omit<LeadPayload, "sessionId" | "language" | "conferenceMode" | "answers" | "consent">;
 
 interface FlowContextValue {
   state: FlowState;
@@ -136,24 +136,11 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       showResult: () => {
         const completedAt = state.completedAt ?? new Date().toISOString();
         if (!state.completedAt && state.lang) {
-          const r = computeResult(state.answers);
           void saveCompletedTest({
             sessionId: state.sessionId,
             language: state.lang,
-            completedAt,
             conferenceMode,
             answers: state.answers,
-            scores: {
-              automation: r.dimensions.automation.score,
-              human_value: r.dimensions.human_value.score,
-              cx_maturity: r.dimensions.cx_maturity.score,
-            },
-            levels: {
-              automation: r.dimensions.automation.level,
-              human_value: r.dimensions.human_value.level,
-              cx_maturity: r.dimensions.cx_maturity.level,
-            },
-            biggestOpportunity: r.opportunity,
           });
         }
         update((s) => ({ ...s, screen: "result", completedAt }));
@@ -164,10 +151,9 @@ export function FlowProvider({ children }: { children: ReactNode }) {
           ...lead,
           sessionId: state.sessionId,
           language: lang,
-          consentGiven: true,
-          consentAt: new Date().toISOString(),
-          consentVersion: APP_CONFIG.consentVersion,
-          consentText: t("lead.consent"),
+          conferenceMode,
+          answers: state.answers,
+          consent: true, // the form only calls this when the box is ticked; consent time + text are set on the server
         });
         update((s) => ({ ...s, leadSubmitted: true, screen: "thanks" }));
         window.scrollTo({ top: 0 });
