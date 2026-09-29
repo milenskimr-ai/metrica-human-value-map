@@ -49,6 +49,7 @@ Target: **Vercel** (region `fra1`, Frankfurt) + **Supabase** (EU region) on **cx
 
 **Tablet setup at the booth**
 - [ ] In the tablet's browser, open `https://cx.metrica.bg/?conference=1` once. The badge "Conference mode" appears in the header, and the tablet remembers it.
+- [ ] Check the auto-reset: leave the tablet untouched mid-test. After 90 s the warning appears; after 10 s more it returns to language selection.
 - [ ] Lock the tablet to the browser: **iPad** → Settings → Accessibility → *Guided Access*; **Android** → *App pinning*.
 - [ ] Turn off auto-lock/sleep, keep the charger connected, and set brightness high.
 - [ ] Have a backup connection ready (phone hotspot). Visitors still see their result if the network drops, but results and leads are only saved while online.

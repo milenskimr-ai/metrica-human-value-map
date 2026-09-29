@@ -2,6 +2,7 @@
 
 import { FlowProvider, useFlow } from "@/lib/state";
 import { Header } from "./ui/Header";
+import { IdleGuard } from "./IdleGuard";
 import { LanguageScreen } from "./screens/LanguageScreen";
 import { WelcomeScreen } from "./screens/WelcomeScreen";
 import { QuestionScreen } from "./screens/QuestionScreen";
@@ -18,7 +19,7 @@ export function DiagnosticApp() {
 }
 
 function Shell() {
-  const { state } = useFlow();
+  const { state, conferenceMode } = useFlow();
   const screens = {
     language: <LanguageScreen />,
     welcome: <WelcomeScreen />,
@@ -31,6 +32,7 @@ function Shell() {
     <div className="flex min-h-dvh flex-col">
       <Header />
       <main className="flex flex-1 flex-col">{screens[state.screen]}</main>
+      {conferenceMode && state.screen !== "language" && <IdleGuard key={state.sessionId} />}
     </div>
   );
 }

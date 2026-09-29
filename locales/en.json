@@ -314,6 +314,11 @@
     "talkToMetrica": "TALK TO METRICA",
     "backToResult": "Back to my Human Value Map"
   },
+  "idle": {
+    "title": "Still there?",
+    "text": "The test will restart in {seconds} seconds.",
+    "continue": "CONTINUE THE TEST"
+  },
   "services": {
     "headline": "FROM ORDER TO LOYAL CUSTOMER.",
     "subline": "We connect technology, logistics and people.",

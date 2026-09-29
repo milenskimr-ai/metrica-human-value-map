@@ -6,6 +6,13 @@ export const APP_CONFIG = {
   /** Conference mode default. Per-device override: ?conference=1 or ?conference=0 */
   conferenceModeDefault: process.env.NEXT_PUBLIC_CONFERENCE_MODE === "true",
 
+  /**
+   * Conference mode only: after this many seconds without any tap/scroll/key,
+   * show the "Still there?" warning; after the warning, reset for the next visitor.
+   */
+  idleTimeoutSeconds: 90,
+  idleWarningSeconds: 10,
+
   /** "Talk to Metrica" button target. TODO: confirm with Metrica. */
   contactUrl: "https://metrica.bg",
 

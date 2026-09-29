@@ -101,6 +101,8 @@ The weights are **placeholders, not a validated methodology**. Replace them in `
 
 At the end of the flow, conference mode shows "THANK YOU! / NEXT VISITOR". NEXT VISITOR clears the local answers and contact data, starts a new session and returns to language selection. It never deletes saved records.
 
+**Auto-reset:** if nobody touches the tablet for 90 seconds, a "Still there? / Още ли сте тук?" warning appears. If nobody taps within 10 seconds, the session resets to language selection. Both times are set in `config/app.ts` (`idleTimeoutSeconds`, `idleWarningSeconds`). Auto-reset works only in conference mode, and never on the language screen.
+
 - Turn it on for every device: `NEXT_PUBLIC_CONFERENCE_MODE=true`
 - Turn it on for one device (e.g. the booth tablet): open `/?conference=1` once. This is remembered on that device. Turn it off with `/?conference=0`.
 
