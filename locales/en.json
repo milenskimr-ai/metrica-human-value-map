@@ -1,0 +1,327 @@
+{
+  "meta": {
+    "title": "METRICA HUMAN VALUE MAP",
+    "description": "Where should AI work — and where should humans make the difference? A 60-second diagnostic by Metrica."
+  },
+  "language": {
+    "prompt": "Choose your language",
+    "name": "ENGLISH"
+  },
+  "common": {
+    "back": "Back",
+    "continue": "Continue",
+    "questionOf": "Question {current} / {total}",
+    "selectUpTo": "Select up to {max}",
+    "selectAll": "Select all that apply",
+    "conferenceMode": "Conference mode",
+    "nextVisitor": "NEXT VISITOR"
+  },
+  "welcome": {
+    "title": "METRICA HUMAN VALUE MAP",
+    "tagline": "HUMANS, WHERE IT MATTERS.",
+    "subline1": "AI for routine.",
+    "subline2": "People for relationships.",
+    "question": "Where should AI work — and where should humans make the difference?",
+    "intro": "Take the 60-second Metrica Human Value Test and discover where automation can save resources and where human interaction creates real customer value.",
+    "facts": "60 seconds • 7 questions • Instant result",
+    "start": "START THE TEST"
+  },
+  "questions": {
+    "business_type": {
+      "title": "What best describes your business?",
+      "answers": {
+        "online_brand": "Online store / Brand",
+        "marketplace": "Marketplace",
+        "retail_ecommerce": "Retail + E-commerce",
+        "services": "Services",
+        "other": "Other"
+      }
+    },
+    "monthly_contacts": {
+      "title": "How many customer enquiries do you receive in an average month?",
+      "answers": {
+        "under_100": "Under 100",
+        "100_500": "100–500",
+        "500_2000": "500–2,000",
+        "over_2000": "More than 2,000",
+        "unknown": "I don't know"
+      }
+    },
+    "contact_reasons": {
+      "title": "Why do customers contact you most often?",
+      "answers": {
+        "order_status": "Order / delivery status",
+        "product_information": "Product information",
+        "change_order": "Change or cancel an order",
+        "returns": "Returns / exchanges",
+        "complaint": "Complaint / problem",
+        "product_advice": "Help choosing a product",
+        "payment": "Payment",
+        "other": "Other"
+      }
+    },
+    "channels": {
+      "title": "How can customers contact you?",
+      "answers": {
+        "phone": "Phone",
+        "email": "Email",
+        "chat": "Live chat",
+        "social": "Social media",
+        "messaging": "WhatsApp / Viber",
+        "contact_form": "Contact form"
+      }
+    },
+    "biggest_challenge": {
+      "title": "What is your biggest customer service challenge?",
+      "answers": {
+        "cost": "Customer service costs",
+        "people": "Finding and retaining people",
+        "slow_response": "Slow response times",
+        "inconsistent_quality": "Inconsistent service quality",
+        "unhappy_customers": "Handling unhappy customers",
+        "unused_customer_insight": "We don't use customer conversations enough for sales and loyalty",
+        "no_major_problem": "We don't have a major problem"
+      }
+    },
+    "complex_problem": {
+      "title": "What happens when a customer has a complex problem?",
+      "answers": {
+        "direct_resolution": "They quickly reach a person who can solve it",
+        "multiple_steps": "They are transferred between several people or steps",
+        "wait": "They leave a request and wait for an answer",
+        "depends": "It depends on who is working",
+        "unknown": "I don't know"
+      }
+    },
+    "human_attention": {
+      "lead": "You have 10 minutes of human attention available for ONE customer.",
+      "title": "Who gets it?",
+      "answers": {
+        "order_status_customer": "A customer asking where their order is.",
+        "purchase_hesitation": "A customer who is unsure which product to buy.",
+        "angry_loyal_customer": "A loyal customer who received a problematic order and is angry.",
+        "standard_return": "A customer asking about the standard return procedure."
+      }
+    }
+  },
+  "insight": {
+    "text1": "Human attention is one of your most valuable customer service resources.",
+    "text2": "Are you spending it where it creates the most value?",
+    "cta": "SEE MY HUMAN VALUE MAP"
+  },
+  "result": {
+    "eyebrow": "METRICA HUMAN VALUE MAP",
+    "title": "YOUR HUMAN VALUE MAP",
+    "intro": "Based on your answers — where automation saves resources and where people create real customer value."
+  },
+  "dimensions": {
+    "automation": {
+      "name": "AUTOMATION OPPORTUNITY",
+      "levels": { "low": "LOW", "medium": "MEDIUM", "high": "HIGH" },
+      "summary": {
+        "low": "Your customer contacts are not dominated by routine requests. Automation can help, but it is not your main lever.",
+        "medium": "Part of your customer contacts is routine and could be handled faster with automation.",
+        "high": "A significant share of your customer contacts is routine and predictable — a strong case for automation."
+      }
+    },
+    "human_value": {
+      "name": "HUMAN VALUE OPPORTUNITY",
+      "levels": { "low": "LOW", "medium": "MEDIUM", "high": "HIGH" },
+      "summary": {
+        "low": "Most of your contacts are routine today. Human attention matters most in the few moments involving emotion and trust.",
+        "medium": "There are clear moments in your customer journey where human attention creates extra value.",
+        "high": "Your customer journey has many moments where people make the difference — in sales, complaints and loyalty."
+      }
+    },
+    "cx_maturity": {
+      "name": "CX MATURITY",
+      "levels": { "low": "LOW", "medium": "MEDIUM", "high": "HIGH" },
+      "summary": {
+        "low": "Your customer service processes have room to become more structured and predictable.",
+        "medium": "You have a working foundation, with some gaps in routing, ownership or consistency.",
+        "high": "Your customer service is well structured, with clear routes to people who can solve problems."
+      }
+    }
+  },
+  "reasons": {
+    "automation": {
+      "monthly_contacts": {
+        "under_100": "With under 100 enquiries a month, automation is a useful helper rather than a top priority.",
+        "100_500": "At 100–500 enquiries a month, routine questions already take noticeable team time.",
+        "500_2000": "At 500–2,000 enquiries a month, repetitive contacts are a real cost driver.",
+        "over_2000": "With more than 2,000 enquiries a month, even small automation gains add up quickly.",
+        "unknown": "Not knowing your contact volume suggests the first step is better visibility."
+      },
+      "contact_reasons": {
+        "order_status": "Order and delivery status questions are among the easiest contacts to automate.",
+        "product_information": "Repetitive product questions can be answered instantly with well-structured information and AI.",
+        "change_order": "Order changes and cancellations can be partly automated with clear rules.",
+        "returns": "Standard return and exchange requests follow predictable steps that can be automated.",
+        "payment": "Payment questions are usually routine and well suited for self-service.",
+        "complaint": "Your main contact drivers need human judgment more than automation.",
+        "product_advice": "Product advice is a conversation where people add value; automation plays a supporting role."
+      },
+      "biggest_challenge": {
+        "cost": "Automating routine contacts is one of the most direct ways to reduce service costs.",
+        "people": "Automation reduces pressure on your team by taking over repetitive work.",
+        "slow_response": "Instant automated answers to simple questions free up time for faster human responses."
+      },
+      "human_attention": {
+        "order_status_customer": "You would spend scarce human attention on a question automation can answer.",
+        "standard_return": "You would spend scarce human attention on a standard procedure automation can handle."
+      }
+    },
+    "human_value": {
+      "contact_reasons": {
+        "order_status": "Many of your contacts are routine, so human attention can be concentrated on fewer, more important moments.",
+        "complaint": "Complaints are moments where a human response can turn frustration into loyalty.",
+        "product_advice": "Customers asking for advice are ready to buy — a good conversation directly drives sales."
+      },
+      "biggest_challenge": {
+        "unhappy_customers": "Handling unhappy customers well is one of the highest-value uses of human attention.",
+        "unused_customer_insight": "Your customer conversations hold untapped sales and loyalty potential.",
+        "inconsistent_quality": "Consistent, empowered people make every important interaction count.",
+        "no_major_problem": "You see no major issues today — the opportunity is to turn good service into a competitive advantage."
+      },
+      "complex_problem": {
+        "direct_resolution": "Customers with complex problems already reach someone who can help — a strong base to build on.",
+        "multiple_steps": "Complex cases pass through several people — a single owner would add real value.",
+        "wait": "Customers with complex problems wait for answers — timely human contact is an opportunity.",
+        "depends": "The outcome depends on who is working — structured human expertise can make it reliable."
+      },
+      "human_attention": {
+        "order_status_customer": "Your instinct is to spend human time on routine requests — rebalancing it could unlock more value.",
+        "purchase_hesitation": "You would invest human attention in a hesitant buyer — where a conversation turns into revenue.",
+        "angry_loyal_customer": "You would invest human attention in an angry loyal customer — exactly where it protects long-term value.",
+        "standard_return": "Your instinct is to spend human time on standard procedures — rebalancing it could unlock more value."
+      }
+    },
+    "cx_maturity": {
+      "monthly_contacts": {
+        "unknown": "Contact volumes are not tracked yet, which makes planning harder."
+      },
+      "biggest_challenge": {
+        "slow_response": "Slow response times point to capacity or routing gaps.",
+        "inconsistent_quality": "Service quality varies, which points to processes that are not yet standardised.",
+        "no_major_problem": "You report no major customer service problems."
+      },
+      "complex_problem": {
+        "direct_resolution": "Customers with complex problems quickly reach someone who can solve them.",
+        "multiple_steps": "Complex cases are transferred between several people or steps.",
+        "wait": "Customers with complex problems leave a request and wait.",
+        "depends": "Resolution depends on who is working, which signals unclear ownership.",
+        "unknown": "It is unclear what happens with complex problems — visibility is the first step."
+      },
+      "human_attention": {
+        "order_status_customer": "Human attention may be going to routine requests rather than high-value moments.",
+        "purchase_hesitation": "You direct human attention toward moments that create value.",
+        "angry_loyal_customer": "You prioritise human attention for loyal customers at risk.",
+        "standard_return": "Human attention may be going to routine requests rather than high-value moments."
+      }
+    }
+  },
+  "journey": {
+    "title": "YOUR CUSTOMER JOURNEY",
+    "subtitle": "Routine → Automation. Complexity → AI-assisted people. Emotion, trust and loyalty → People.",
+    "relevant": "Relevant to you",
+    "modes": {
+      "automate": "AUTOMATE",
+      "ai_human": "AI + HUMAN",
+      "human": "HUMAN"
+    },
+    "stages": {
+      "discover": { "name": "DISCOVER", "hint": "Product questions, availability" },
+      "buy": { "name": "BUY", "hint": "Advice and purchase decisions" },
+      "order": { "name": "ORDER", "hint": "Changes, cancellations, payment" },
+      "delivery": { "name": "DELIVERY", "hint": "Tracking and status updates" },
+      "support": { "name": "SUPPORT", "hint": "Returns and everyday questions" },
+      "complaint": { "name": "COMPLAINT", "hint": "Problems and frustration" },
+      "retention": { "name": "RETENTION", "hint": "Loyalty and repeat purchases" }
+    }
+  },
+  "opportunity": {
+    "title": "YOUR BIGGEST OPPORTUNITY",
+    "categories": {
+      "automation": {
+        "name": "Automation",
+        "text": "A large share of your contacts is routine and repetitive. Automating order status, product FAQs and standard returns will lower costs and free your team for the conversations that matter."
+      },
+      "retention": {
+        "name": "Customer Retention",
+        "text": "Your loyal customers are your most valuable asset. When something goes wrong, a fast, personal human response protects the relationship and future revenue. AI can flag at-risk customers so your people can act first."
+      },
+      "complaint_handling": {
+        "name": "Complaint Handling",
+        "text": "Complaints and unhappy customers are where loyalty is won or lost. Give these cases to empowered people with full order context, supported by AI, and turn problems into proof of good service."
+      },
+      "sales_consultation": {
+        "name": "Sales & Product Consultation",
+        "text": "Customers asking for advice are close to buying. Human consultation, supported by AI product knowledge, can raise conversion and average order value. Let automation answer the simple questions so your people have time to sell."
+      },
+      "service_processes": {
+        "name": "Customer Service Processes",
+        "text": "Complex cases currently pass through too many hands or wait too long. Clear routing, ownership and AI-supported case context will make resolution faster and more predictable."
+      },
+      "customer_intelligence": {
+        "name": "Customer Intelligence",
+        "text": "Your customer conversations contain valuable signals about products, problems and buying intent. Structuring and analysing them with AI gives your team insights for sales, loyalty and better decisions."
+      }
+    }
+  },
+  "recommendations": {
+    "title": "METRICA RECOMMENDS",
+    "forYou": "In your journey:",
+    "automate": {
+      "title": "AUTOMATE",
+      "text": "Automate routine and repetitive customer contacts."
+    },
+    "ai_human": {
+      "title": "AI + HUMAN",
+      "text": "Use AI to give people faster access to information and context."
+    },
+    "human": {
+      "title": "HUMAN",
+      "text": "Invest human attention in moments involving emotion, trust, complex decisions, complaints, retention and loyalty."
+    }
+  },
+  "lead": {
+    "title": "Want your full Human Value Map?",
+    "subtitle": "Receive a more detailed analysis and recommendations from Metrica.",
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "company": "Company",
+      "email": "Business email",
+      "website": "Website",
+      "phone": "Phone",
+      "optional": "optional"
+    },
+    "consent": "I agree that Metrica may contact me regarding my Human Value Map and relevant services.",
+    "privacyLink": "Privacy policy",
+    "submit": "SEND ME MY FULL MAP",
+    "submitting": "Sending…",
+    "errors": {
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "consent": "Please confirm your consent so we can contact you",
+      "submit": "Something went wrong. Please try again."
+    }
+  },
+  "thankYou": {
+    "title": "THANK YOU!",
+    "text": "The Metrica team will contact you with your full Human Value Map.",
+    "conferenceText": "Talk to the Metrica team about your Human Value Map.",
+    "talkToMetrica": "TALK TO METRICA",
+    "backToResult": "Back to my Human Value Map"
+  },
+  "services": {
+    "headline": "FROM ORDER TO LOYAL CUSTOMER.",
+    "subline": "We connect technology, logistics and people.",
+    "items": {
+      "customer_service": "CUSTOMER SERVICE",
+      "fulfillment": "E-COMMERCE FULFILLMENT",
+      "data_technology": "DATA & TECHNOLOGY",
+      "cx_consulting": "CX CONSULTING"
+    }
+  }
+}

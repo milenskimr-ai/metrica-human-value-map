@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-navy-950: #06121f;
+  --color-navy-900: #0b1f3a;
+  --color-navy-800: #14305a;
+  --color-navy-700: #1f416f;
+  --color-navy-100: #e3e9f2;
+  --color-navy-50: #f1f4f9;
+
+  --color-accent-700: #0a7a77;
+  --color-accent-600: #0d8f8b;
+  --color-accent-500: #12a7a1;
+  --color-accent-400: #3cc2bc;
+  --color-accent-100: #d5f3f1;
+  --color-accent-50: #ecfaf9;
+
+  --color-canvas: #f6f8fb;
+  --color-ink: #0b1f3a;
+  --color-muted: #5b6b82;
+  --color-line: #e2e8f0;
+
+  --shadow-card: 0 1px 2px rgb(11 31 58 / 0.04), 0 8px 24px -12px rgb(11 31 58 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(11 31 58 / 0.05), 0 16px 40px -16px rgb(11 31 58 / 0.22);
+
+  --animate-enter: enter 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
