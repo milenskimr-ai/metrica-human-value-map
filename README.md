@@ -13,7 +13,7 @@ Stack: Next.js (App Router) · TypeScript · Tailwind CSS · Supabase (Phase 2) 
 | 1 | Frontend MVP: language, welcome, 7 questions, scoring, Human Value Map, journey, lead form, conference mode | ✅ done |
 | 2 | Supabase storage (API routes + service-role key on the server only) | ✅ done |
 | 3 | Protected admin dashboard (stats, lead table, CSV export) | ✅ done |
-| 4 | Vercel production deployment + custom domain | ⏳ |
+| 4 | Vercel production readiness + custom domain prep | ✅ done — see [DEPLOYMENT.md](DEPLOYMENT.md) |
 
 
 ## Run locally
@@ -25,6 +25,8 @@ npm run dev                  # http://localhost:3000
 ```
 
 Other scripts: `npm run build` · `npm run typecheck` · `npm run check:locales`
+
+**Deploying to Vercel, connecting cx.metrica.bg, and the conference checklist: see [DEPLOYMENT.md](DEPLOYMENT.md).**
 
 ## Supabase setup (one time)
 
