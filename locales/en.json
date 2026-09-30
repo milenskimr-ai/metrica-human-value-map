@@ -32,7 +32,7 @@
       "answers": {
         "online_brand": "Online store / Brand",
         "marketplace": "Marketplace",
-        "retail_ecommerce": "Retail + E-commerce",
+        "retail_ecommerce": "Retail + E‑commerce",
         "services": "Services",
         "other": "Other"
       }
@@ -324,7 +324,7 @@
     "subline": "We connect technology, logistics and people.",
     "items": {
       "customer_service": "CUSTOMER SERVICE",
-      "fulfillment": "E-COMMERCE FULFILLMENT",
+      "fulfillment": "E‑COMMERCE FULFILLMENT",
       "data_technology": "DATA & TECHNOLOGY",
       "cx_consulting": "CX CONSULTING"
     }

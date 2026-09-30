@@ -32,7 +32,7 @@
       "answers": {
         "online_brand": "Онлайн магазин / Бранд",
         "marketplace": "Marketplace",
-        "retail_ecommerce": "Физически магазини + e-commerce",
+        "retail_ecommerce": "Физически магазини + e‑commerce",
         "services": "Услуги",
         "other": "Друго"
       }
@@ -324,7 +324,7 @@
     "subline": "Свързваме технологии, логистика и хора.",
     "items": {
       "customer_service": "КЛИЕНТСКО ОБСЛУЖВАНЕ",
-      "fulfillment": "E-COMMERCE ФУЛФИЛМЪНТ",
+      "fulfillment": "E‑COMMERCE ФУЛФИЛМЪНТ",
       "data_technology": "ДАННИ И ТЕХНОЛОГИИ",
       "cx_consulting": "CX КОНСУЛТИРАНЕ"
     }
