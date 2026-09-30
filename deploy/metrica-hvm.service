@@ -1,0 +1,38 @@
+# /etc/systemd/system/metrica-hvm.service
+# Runs the app as its own unprivileged user, listening on localhost only.
+[Unit]
+Description=Metrica Human Value Map (Next.js)
+After=network-online.target mysql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=metrica-hvm
+Group=metrica-hvm
+WorkingDirectory=/opt/metrica-hvm/current
+EnvironmentFile=/etc/metrica-hvm/env
+Environment=NODE_ENV=production
+# Listen on localhost only — Nginx is the only way in.
+Environment=HOSTNAME=127.0.0.1
+ExecStart=/opt/metrica-hvm/node/bin/node server.js
+Restart=on-failure
+RestartSec=3
+
+# Resource limits so this app can never starve the other apps on the server
+MemoryMax=512M
+CPUQuota=100%
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

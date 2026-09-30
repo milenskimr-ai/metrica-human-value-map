@@ -1,7 +1,7 @@
 /**
  * Persistence adapter — the only place the UI talks to storage.
  * Sends data to our own API routes; they validate it, recompute the scores
- * and write to Supabase with the server-only service-role key.
+ * and write to MySQL with server-only credentials.
  */
 
 import type { Answers } from "@/config/questions";

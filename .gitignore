@@ -9,3 +9,7 @@ next-env.d.ts
 .vercel
 .DS_Store
 npm-debug.log*
+
+# release package built by scripts/package-release.sh
+metrica-hvm.tar.gz
+metrica-hvm.tar.gz.sha256

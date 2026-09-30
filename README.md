@@ -4,52 +4,57 @@
 
 A bilingual (BG / EN), 60–90 second diagnostic for businesses. It shows three things: where automation saves resources, where human attention creates customer value, and how mature their customer experience (CX) is. Built for Metrica's e-commerce conference booth and designed to stay on as a permanent lead-generation tool (target domain: `cx.metrica.bg`).
 
-Stack: Next.js (App Router) · TypeScript · Tailwind CSS · Supabase (Phase 2) · Vercel.
+Stack: Next.js (App Router) · TypeScript · Tailwind CSS · MySQL · self-hosted on Node.js behind Nginx.
 
 ## Status
 
 | Phase | Scope | Status |
 |---|---|---|
 | 1 | Frontend MVP: language, welcome, 7 questions, scoring, Human Value Map, journey, lead form, conference mode | ✅ done |
-| 2 | Supabase storage (API routes + service-role key on the server only) | ✅ done |
+| 2 | Database storage (API routes; credentials on the server only) | ✅ done — MySQL since the self-hosting migration |
 | 3 | Protected admin dashboard (stats, lead table, CSV export) | ✅ done |
-| 4 | Vercel production readiness + custom domain prep | ✅ done — see [DEPLOYMENT.md](DEPLOYMENT.md) |
+| 4 | Production readiness + custom domain prep | ✅ done — self-hosting on the Metrica server, see [DEPLOYMENT.md](DEPLOYMENT.md) |
 
 
 ## Run locally
 
 ```bash
 npm install
-cp .env.example .env.local   # optional in Phase 1
+cp .env.example .env.local   # then fill in the MYSQL_* values and ADMIN_PASSWORD
 npm run dev                  # http://localhost:3000
 ```
 
-Other scripts: `npm run build` · `npm run typecheck` · `npm run check:locales`
+Without the `MYSQL_*` values, the app still runs in development: submissions are logged to the terminal instead of being stored.
 
-**Deploying to Vercel, connecting cx.metrica.bg, and the conference checklist: see [DEPLOYMENT.md](DEPLOYMENT.md).**
+For a local database, run the three scripts in `mysql/` against a local MySQL 8 (see [DEPLOYMENT.md](DEPLOYMENT.md), §2).
 
-## Supabase setup (one time)
+**Deploying on the Metrica server (Nginx + Node.js + MySQL), connecting cx.metrica.bg, and the conference checklist: see [DEPLOYMENT.md](DEPLOYMENT.md).**
 
-1. Create a Supabase project (EU region recommended, e.g. Frankfurt).
-2. In **SQL Editor**, run `supabase/migrations/0001_diagnostic_sessions.sql`.
-3. In **Project Settings → API**, copy the Project URL and the `service_role` key into `.env.local` (and later into Vercel):
-   ```
-   SUPABASE_URL=https://xxxx.supabase.co
-   SUPABASE_SERVICE_ROLE_KEY=...
-   ```
+## Scripts and tests
+
+| Command | What it does |
+|---|---|
+| `npm run dev` / `npm run build` | development server / production build |
+| `npm run typecheck` | TypeScript check |
+| `npm run check:locales` | both locale files have the same keys |
+| `npm run test:unit` | scoring engine, validation, CSV export, admin password check — no database needed |
+| `npm run test:integration` | real API routes against a real MySQL, connected as the restricted app user. Needs `MYSQL_*` set; skipped otherwise. |
+| `npm test` | all of the above tests |
+
+GitHub Actions runs all checks and tests on every push, against **MySQL 8.0 and 8.4**, then builds the release package (see [DEPLOYMENT.md](DEPLOYMENT.md)).
 
 ### How data flows
 
 ```
-browser ──POST /api/submissions/complete──▶ Next.js API route ──service-role key──▶ Supabase
+browser ──POST /api/submissions/complete──▶ Next.js API route ──restricted MySQL user──▶ MySQL
         ──POST /api/submissions/lead─────▶
 ```
 
 - **One row per completed test** in `diagnostic_sessions`. It is stored as soon as the result is shown, without contact data (for aggregate statistics). If the visitor then submits the lead form, the same row gets the contact fields.
 - The browser sends **only answer IDs**. The server validates them and **recomputes the scores itself**, so scores cannot be faked. The row also stores `scoring_version` (`config/scoring.ts`), so results from different weight versions can be told apart.
 - **Consent:** the server stores `consent_given`, `consent_at` (server time), `consent_version` and the exact `consent_text` shown in the visitor's language. A database constraint rejects contact data without consent.
-- **Security:** Row Level Security is on with no policies, so the public `anon` key has no access. The service-role key is used only in server code (`lib/server/`, guarded by `server-only`).
-- **Spam:** hidden honeypot field, request size limit, strict input validation. For heavy traffic, add Vercel's firewall or rate-limit rules.
+- **Security:** the browser never talks to the database. MySQL credentials exist only in the server's environment and are used only in server code (`lib/server/`, guarded by `server-only`). The app's MySQL user can only `SELECT`, `INSERT` and `UPDATE` its one table: no deletes, no schema changes, no other databases. All SQL uses parameters.
+- **Spam:** hidden honeypot field, request size limit, strict input validation, plus Nginx rate limits on submissions and admin login.
 - If saving the completed test fails, the visitor still sees their result. If saving the lead fails, the form shows an error and the visitor can retry.
 
 ## Admin dashboard
@@ -63,7 +68,7 @@ Open **`/admin`** (e.g. `https://cx.metrica.bg/admin`) and sign in with `ADMIN_P
 
 Security:
 - One shared password, a signed httpOnly cookie valid for 12 hours, and a delay after a wrong password.
-- The admin pages are not indexed by search engines, and all data is loaded on the server with the service-role key.
+- The admin pages are not indexed by search engines, and all data is loaded on the server; the browser never gets database access.
 - Signing out clears the cookie in that browser. To sign out everyone, change `ADMIN_PASSWORD`.
 - Dates are shown in Bulgarian time (Europe/Sofia).
 
@@ -118,10 +123,12 @@ locales/             bg.json, en.json
 lib/engine/          pure scoring / journey / opportunity / explanation logic
 lib/state.tsx        flow state (sessionStorage), language, reset
 lib/persistence.ts   browser → API calls
-lib/server/          server-only: Supabase client, validation, row building
+lib/server/          server-only: MySQL pool + queries, validation, row building, admin auth
 app/api/submissions/ API routes (complete, lead)
 app/admin/           admin login + dashboard (server-protected)
 components/admin/    dashboard UI, lead details panel
 lib/admin/           CSV export, formatting
-supabase/migrations/ SQL schema
+mysql/               SQL: database + restricted user, schema, grants
+deploy/              systemd unit, Nginx config, env template, install script
+tests/               unit + MySQL integration tests (Vitest)
 ```

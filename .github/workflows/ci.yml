@@ -5,8 +5,29 @@ on:
   pull_request:
 
 jobs:
-  check:
+  test:
+    name: Tests (MySQL ${{ matrix.mysql }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mysql: ["8.0", "8.4"]
+    services:
+      mysql:
+        image: mysql:${{ matrix.mysql }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: metrica_hvm
+      MYSQL_USER: hvm_app
+      MYSQL_PASSWORD: ci-app-password
+      REQUIRE_DB_TESTS: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,4 +37,40 @@ jobs:
       - run: npm ci
       - run: npm run check:locales
       - run: npm run typecheck
+      - run: npm run test:unit
+      - name: Create database, schema and restricted app user (same scripts as production)
+        run: |
+          # In CI the app connects from the Docker network, not "localhost"
+          sed -e "s/CHANGE_ME_STRONG_PASSWORD/$MYSQL_PASSWORD/" -e "s/'localhost'/'%'/" mysql/000_create_database_and_user.sql | mysql -h 127.0.0.1 -uroot -proot
+          mysql -h 127.0.0.1 -uroot -proot metrica_hvm < mysql/001_schema.sql
+          sed -e "s/'localhost'/'%'/" mysql/002_grant_app_user.sql | mysql -h 127.0.0.1 -uroot -proot
+      - run: npm run test:integration
+
+  build:
+    name: Build release package
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      # Baked into the build. Override in GitHub → Settings → Secrets and variables → Actions → Variables.
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://cx.metrica.bg' }}
+      NEXT_PUBLIC_CONFERENCE_MODE: ${{ vars.NEXT_PUBLIC_CONFERENCE_MODE || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - run: npm run build
+      - run: bash scripts/package-release.sh
+      - name: Upload release (app + install script + server config + SQL)
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrica-hvm-${{ github.ref_name == 'main' && 'main' || 'branch' }}-${{ github.sha }}
+          retention-days: 30
+          path: |
+            metrica-hvm.tar.gz
+            metrica-hvm.tar.gz.sha256
+            deploy/
+            mysql/

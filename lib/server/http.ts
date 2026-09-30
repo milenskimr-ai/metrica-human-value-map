@@ -17,12 +17,12 @@ export async function readJson(req: Request): Promise<Record<string, unknown> | 
 export const ok = () => NextResponse.json({ ok: true });
 export const fail = (status: number, error: string) => NextResponse.json({ ok: false, error }, { status });
 
-/** Without Supabase env vars: accept (and log) in development, refuse in production. */
+/** Without database env vars: accept (and log) in development, refuse in production. */
 export function notConfigured(kind: string, payload: unknown) {
   if (process.env.NODE_ENV !== "production") {
-    console.info(`[dev] Supabase not configured — ${kind} not stored:`, JSON.stringify(payload));
+    console.info(`[dev] MySQL not configured — ${kind} not stored:`, JSON.stringify(payload));
     return ok();
   }
-  console.error("Supabase is not configured (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)");
+  console.error("MySQL is not configured (MYSQL_HOST or MYSQL_SOCKET, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD)");
   return fail(503, "storage_not_configured");
 }

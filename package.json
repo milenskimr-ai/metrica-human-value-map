@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "check:locales": "node scripts/check-locales.mjs"
+    "check:locales": "node scripts/check-locales.mjs",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.117.2",
     "lucide-react": "^1.48.0",
+    "mysql2": "^3.24.5",
     "next": "^16.3.7",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -24,7 +26,8 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.2"
   },
   "engines": {
     "node": ">=20"

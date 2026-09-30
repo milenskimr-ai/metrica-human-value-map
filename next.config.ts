@@ -31,6 +31,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Self-contained server bundle (.next/standalone) for running on our own server with plain Node.js.
+  output: "standalone",
   poweredByHeader: false,
   async headers() {
     return [
