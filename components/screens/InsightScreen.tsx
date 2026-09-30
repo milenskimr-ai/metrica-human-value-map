@@ -17,7 +17,7 @@ export function InsightScreen() {
             <ArrowLeft className="size-5" />
             {t("common.back")}
           </Button>
-          <Button onClick={showResult} className="bg-accent-500 text-navy-950 hover:bg-accent-400 active:bg-accent-600 sm:ml-auto">
+          <Button variant="accent" onClick={showResult} className="sm:ml-auto">
             {t("insight.cta")}
             <ArrowRight className="size-5" />
           </Button>

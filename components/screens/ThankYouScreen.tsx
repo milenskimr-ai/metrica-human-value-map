@@ -19,7 +19,7 @@ export function ThankYouScreen() {
 
         <div className="mt-10 flex w-full flex-col gap-3 sm:w-auto">
           {conferenceMode ? (
-            <Button onClick={resetForNextVisitor} className="min-h-16 bg-accent-500 px-10 text-lg text-navy-950 hover:bg-accent-400">
+            <Button variant="accent" onClick={resetForNextVisitor} className="min-h-16 px-10 text-lg">
               <RotateCcw className="size-5" />
               {t("common.nextVisitor")}
             </Button>
@@ -28,7 +28,7 @@ export function ThankYouScreen() {
               href={APP_CONFIG.contactUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={buttonClass("primary", "bg-accent-500 text-navy-950 hover:bg-accent-400")}
+              className={buttonClass("accent")}
             >
               {t("thankYou.talkToMetrica")}
               <ArrowRight className="size-5" />
