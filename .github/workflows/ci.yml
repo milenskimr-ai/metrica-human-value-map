@@ -6,52 +6,68 @@ on:
 
 jobs:
   test:
-    name: Tests (MySQL ${{ matrix.mysql }})
+    name: Tests (PHP ${{ matrix.php }}, MariaDB 10.6)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        mysql: ["8.0", "8.4"]
+        php: ["7.4", "8.3"]
     services:
-      mysql:
-        image: mysql:${{ matrix.mysql }}
+      mariadb:
+        image: mariadb:10.6
         env:
-          MYSQL_ROOT_PASSWORD: root
+          MARIADB_ROOT_PASSWORD: root
+          # Like the production server: database and app user already exist
+          MARIADB_DATABASE: metrica_hvm
+          MARIADB_USER: hvm_app
+          MARIADB_PASSWORD: ci-app-password
         ports: ["3306:3306"]
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
-          --health-interval=5s --health-timeout=5s --health-retries=20
-    env:
-      MYSQL_HOST: 127.0.0.1
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: metrica_hvm
-      MYSQL_USER: hvm_app
-      MYSQL_PASSWORD: ci-app-password
-      REQUIRE_DB_TESTS: "true"
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_mysql, mbstring
+          coverage: none
       - run: npm ci
       - run: npm run check:locales
       - run: npm run typecheck
+      - run: npm run build:site
       - run: npm run test:unit
-      - name: Create database, schema and restricted app user (same scripts as production)
+      - name: PHP scoring = TypeScript scoring
+        run: npx vitest run tests/php/parity.test.ts
+      - name: Create the table (same script as for phpMyAdmin)
+        run: mysql -h 127.0.0.1 -u hvm_app -pci-app-password metrica_hvm < mysql/schema.sql
+      - name: Fill in api/config.php and serve the built site
         run: |
-          # In CI the app connects from the Docker network, not "localhost"
-          sed -e "s/CHANGE_ME_STRONG_PASSWORD/$MYSQL_PASSWORD/" -e "s/'localhost'/'%'/" mysql/000_create_database_and_user.sql | mysql -h 127.0.0.1 -uroot -proot
-          mysql -h 127.0.0.1 -uroot -proot metrica_hvm < mysql/001_schema.sql
-          sed -e "s/'localhost'/'%'/" mysql/002_grant_app_user.sql | mysql -h 127.0.0.1 -uroot -proot
-      - run: npm run test:integration
+          sed -i -e "s/'db_host'     => 'localhost'/'db_host'     => '127.0.0.1'/" \
+                 -e "s/'db_password' => ''/'db_password' => 'ci-app-password'/" \
+                 -e "s/'admin_password' => ''/'admin_password' => 'ci-admin-password'/" dist/web/api/config.php
+          php -S 127.0.0.1:8080 -t dist/web > php-server.log 2>&1 &
+          sleep 2
+          curl -fsS http://127.0.0.1:8080/api/health.php
+      - name: PHP backend over HTTP against MariaDB 10.6
+        run: npm run test:php
+        env:
+          HVM_BASE_URL: http://127.0.0.1:8080
+          HVM_ADMIN_PASSWORD: ci-admin-password
+          REQUIRE_PHP_TESTS: "true"
+      - if: failure()
+        run: cat php-server.log
 
   build:
-    name: Build release package
+    name: Build upload package
     needs: test
     runs-on: ubuntu-latest
     env:
-      # Baked into the build. Override in GitHub → Settings → Secrets and variables → Actions → Variables.
+      # Baked into the static pages. Override in GitHub → Settings → Secrets and variables → Actions → Variables.
       NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://cx.metrica.bg' }}
       NEXT_PUBLIC_CONFERENCE_MODE: ${{ vars.NEXT_PUBLIC_CONFERENCE_MODE || 'false' }}
     steps:
@@ -61,16 +77,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
-      - run: bash scripts/package-release.sh
-      - name: Upload release (app + install script + server config + SQL)
+      - run: npm run build:site
+      - name: Upload package (site zip + table script)
         if: github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: metrica-hvm-${{ github.ref_name == 'main' && 'main' || 'branch' }}-${{ github.sha }}
+          name: metrica-hvm-web-${{ github.ref_name == 'main' && 'main' || 'branch' }}-${{ github.sha }}
           retention-days: 30
           path: |
-            metrica-hvm.tar.gz
-            metrica-hvm.tar.gz.sha256
-            deploy/
-            mysql/
+            metrica-hvm-web.zip
+            mysql/schema.sql

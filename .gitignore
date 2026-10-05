@@ -14,3 +14,10 @@ npm-debug.log*
 metrica-hvm.tar.gz
 metrica-hvm.tar.gz.sha256
 metrica-hvm-ispconfig.zip
+
+# static export + PHP site build
+out/
+dist/
+metrica-hvm-web.zip
+php/api/_lib/rules.json
+php/api/_lib/revision.txt

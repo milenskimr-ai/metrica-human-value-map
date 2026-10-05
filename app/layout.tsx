@@ -29,9 +29,29 @@ export const viewport: Viewport = {
   themeColor: "#0b1f3a",
 };
 
+/**
+ * Content Security Policy as a <meta> tag (a static site can't send headers itself).
+ * Everything — fonts included — comes from our own origin, and the browser only talks
+ * to our own PHP endpoints. 'unsafe-inline' is needed for Next.js' inline bootstrap scripts.
+ */
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <meta httpEquiv="Content-Security-Policy" content={CSP} />
+      </head>
       <body className="min-h-dvh font-sans antialiased">{children}</body>
     </html>
   );

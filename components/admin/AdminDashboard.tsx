@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Download, LogOut, RefreshCw, Search } from "lucide-react";
 import { QUESTIONS } from "@/config/questions";
 import { TIE_BREAK_ORDER } from "@/config/opportunity";
@@ -17,8 +16,7 @@ type Source = "all" | "conference" | "online";
 
 const CHALLENGES = QUESTIONS.find((q) => q.id === "biggest_challenge")!.answers;
 
-export function AdminDashboard({ rows, logout }: { rows: AdminRow[]; logout: () => Promise<void> }) {
-  const router = useRouter();
+export function AdminDashboard({ rows, onRefresh, onLogout }: { rows: AdminRow[]; onRefresh: () => void; onLogout: () => void }) {
   const [period, setPeriod] = useState<Period>("all");
   const [language, setLanguage] = useState<"all" | "bg" | "en">("all");
   const [source, setSource] = useState<Source>("all");
@@ -102,14 +100,12 @@ export function AdminDashboard({ rows, logout }: { rows: AdminRow[]; logout: () 
             <span className="rounded-full bg-navy-50 px-2.5 py-1 text-xs font-semibold text-navy-700">Admin</span>
           </div>
           <div className="flex items-center gap-1">
-            <IconButton onClick={() => router.refresh()} label="Refresh">
+            <IconButton onClick={onRefresh} label="Refresh">
               <RefreshCw className="size-4" />
             </IconButton>
-            <form action={logout}>
-              <IconButton type="submit" label="Sign out">
-                <LogOut className="size-4" />
-              </IconButton>
-            </form>
+            <IconButton onClick={onLogout} label="Sign out">
+              <LogOut className="size-4" />
+            </IconButton>
           </div>
         </div>
       </header>

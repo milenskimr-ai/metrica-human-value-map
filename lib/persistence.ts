@@ -1,7 +1,7 @@
 /**
  * Persistence adapter — the only place the UI talks to storage.
- * Sends data to our own API routes; they validate it, recompute the scores
- * and write to MySQL with server-only credentials.
+ * Sends data to the PHP endpoints in /api/ (php/api/ in the repo); they validate it,
+ * recompute the scores and write to the database. The browser never sees DB credentials.
  */
 
 import type { Answers } from "@/config/questions";
@@ -39,7 +39,7 @@ async function post(path: string, body: unknown, keepalive = false) {
 /** Fire-and-forget: the visitor always sees their result, even if saving fails. */
 export async function saveCompletedTest(payload: CompletedTestPayload): Promise<void> {
   try {
-    await post("/api/submissions/complete", payload, true);
+    await post("/api/complete.php", payload, true);
   } catch (e) {
     console.warn(e);
   }
@@ -47,5 +47,5 @@ export async function saveCompletedTest(payload: CompletedTestPayload): Promise<
 
 /** Throws on failure so the form can show an error and let the visitor retry. */
 export async function saveLead(payload: LeadPayload): Promise<void> {
-  await post("/api/submissions/lead", payload);
+  await post("/api/lead.php", payload);
 }

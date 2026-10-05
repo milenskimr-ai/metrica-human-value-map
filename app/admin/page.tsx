@@ -1,33 +1,46 @@
-import { requireAdmin } from "@/lib/server/admin-auth";
-import { fetchAllSessions } from "@/lib/server/admin-data";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
-import { logout } from "./actions";
+import { LoginForm } from "@/components/admin/LoginForm";
+import { fetchSessions, logout, type SessionsResult } from "@/lib/admin/api";
 
-export const dynamic = "force-dynamic";
+const MESSAGES: Record<"not_configured" | "error", [string, string]> = {
+  not_configured: [
+    "Not configured yet",
+    "Fill in db_password and admin_password in api/config.php on the server. /api/health.php shows which one is missing.",
+  ],
+  error: ["Could not load data", "Check the database connection (open /api/health.php), then reload."],
+};
 
-export default async function AdminPage() {
-  await requireAdmin();
-  const result = await fetchAllSessions();
+/** Admin dashboard: a static page that loads its data from the PHP backend after sign-in. */
+export default function AdminPage() {
+  const [state, setState] = useState<SessionsResult | { status: "loading" }>({ status: "loading" });
 
+  const load = useCallback(async () => setState(await fetchSessions()), []);
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const signOut = async () => {
+    await logout();
+    setState({ status: "login" });
+  };
+
+  if (state.status === "loading") {
+    return <main className="flex min-h-dvh items-center justify-center text-muted">Loading…</main>;
+  }
+  if (state.status === "login") return <LoginForm onSuccess={load} />;
+  if (state.status === "ok") return <AdminDashboard rows={state.rows} onRefresh={load} onLogout={signOut} />;
+
+  const [title, text] = MESSAGES[state.status];
   return (
-    <>
-      {result.status === "ok" ? (
-        <AdminDashboard rows={result.rows} logout={logout} />
-      ) : (
-        <main className="mx-auto max-w-xl px-5 py-20 text-center">
-          <h1 className="text-xl font-bold text-navy-900">
-            {result.status === "not_configured" ? "The database is not configured" : "Could not load data"}
-          </h1>
-          <p className="mt-2 text-muted">
-            {result.status === "not_configured"
-              ? "Set the MYSQL_* variables in the server environment."
-              : "Check the server logs and the MySQL connection, then reload."}
-          </p>
-          <form action={logout} className="mt-6">
-            <button className="text-sm text-muted underline">Sign out</button>
-          </form>
-        </main>
-      )}
-    </>
+    <main className="mx-auto max-w-xl px-5 py-20 text-center">
+      <h1 className="text-xl font-bold text-navy-900">{title}</h1>
+      <p className="mt-2 text-muted">{text}</p>
+      <button onClick={signOut} className="mt-6 text-sm text-muted underline">
+        Sign out
+      </button>
+    </main>
   );
 }

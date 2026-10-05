@@ -5,20 +5,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "build:site": "bash scripts/build-php-site.sh",
+    "rules": "tsx scripts/export-php-rules.ts",
     "typecheck": "tsc --noEmit",
     "check:locales": "node scripts/check-locales.mjs",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
-    "test:integration": "vitest run tests/integration"
+    "test:php": "vitest run tests/php"
   },
   "dependencies": {
     "lucide-react": "^1.48.0",
-    "mysql2": "^3.24.5",
     "next": "^16.3.7",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "server-only": "^0.0.1"
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -26,10 +25,11 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vitest": "^5.0.2"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.9 (build only)"
   }
 }
